@@ -98,7 +98,7 @@ function setCurrentTrends(res){
     var replyobject = reply[0].trends;
     while(length--){
       var currenttrend = trends[length];
-      console.log(currenttrend);
+      console.log(currenttrend.trend_name);
       var secondlength = 5;
       var keep_trend = false;
       while(secondlength--){
