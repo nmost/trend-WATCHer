@@ -98,13 +98,12 @@ function setCurrentTrends(res){
     var replyobject = reply[0].trends;
     while(length--){
       var currenttrend = trends[length];
-      console.log(currenttrend.trend_name);
       var secondlength = 5;
       var keep_trend = false;
       while(secondlength--){
         if (currenttrend && currenttrend.trend_name == replyobject[secondlength].name) keep_trend = true;
       }
-      if(currenttrend && !keep_trend) Trend.find({trend_name: currenttrend.trend_name}).remove();
+      if(currenttrend && !keep_trend) Trend.remove({trend_name: currenttrend.trend_name});
     }
     
     //now that the DB is clean
