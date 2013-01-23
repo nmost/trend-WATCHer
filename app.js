@@ -76,6 +76,7 @@ function initializeUser(req, res, next){
   user.registration_id = req.body.regId;
   user.save(function(){
     pingUser(user.registration_id, "_id", user._id);
+    res.send(user);
   });
 }
 
