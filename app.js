@@ -95,9 +95,6 @@ function setCurrentTrends(res){
       console.log("DATA");
       console.log(data);
       trends = data;
-    });
-    console.log("TRENDS");
-    console.log(trends);
     //FOR NOW CHOOSE 5
     var length = 5;
     var replyobject = reply[0].trends;
@@ -127,6 +124,7 @@ function setCurrentTrends(res){
       }
     }
     res.send(trends);
+    });
   });
 }
 function testCurrentTrends(req, res, next){
