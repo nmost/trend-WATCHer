@@ -75,8 +75,7 @@ function initializeUser(req, res, next){
   var user = new User();
   user.registration_id = req.body.regId;
   user.save(function(){
-    res.send(user);
-    pingUser(user.registration_id);
+    pingUser(user.registration_id, "_id", user._id);
   });
 }
 
@@ -85,39 +84,59 @@ function initializeUser(req, res, next){
 ////
 function setCurrentTrends(res){
   T.get('trends/place', {'id':'1'}, function(err, reply){
-    var trends = Trend.find();
+    if(err){
+      console.log(err);
+      res.send(err);
+      return;
+    }
+    var trends = [];
+    Trend.find().execFind(function(arr,data){
+      trends = data;
+    });
     //FOR NOW CHOOSE 5
-    var length = 5
-    var replyobject = reply[0];
-    while(length--) {
-      var keep_trend = true;
-      var secondlength = 5;
+    var length = 5;
+    var replyobject = reply[0].trends;
+    while(length--){
       var currenttrend = trends[length];
-      if(currenttrend) {
-        keep_trend = false;
-        while(secondlength--) {
-          if(currenttrend.name == replyobject.trends[secondlength].name) keep_trend = true;
-        }
+      var secondlength = 5;
+      var keep_trend = false;
+      while(secondlength--){
+        if (currenttrend.name == replyobject[secondlength].name) keep_trend = true;
       }
-      if(!keep_trend){
-         Trend.find({name:currenttrend.name}).remove();
+      if(!keeptrend) Trend.find({name: currenttrend.name}).remove();
+    }
+    
+    //now that the DB is clean
+    length = 5;
+    while(length--){
+      var size = 5;
+      var is_in_db = false
+      while(size--){
+        if(trends[size].name == replyobject[length].name) is_in_db = true;
+      }
+      if(!is_in_db){
          var newtrend = new Trend();
-         newtrend.trend_name = currenttrend.name;
-         newtrend.trend_query = currenttrend.query;
+         newtrend.trend_name = replyobject[length].name;
+         newtrend.trend_query = replyobject[length].query;
          newtrend.save();
       }
     }
-    res.send(reply);
+    res.send(trends);
   });
 }
 function testCurrentTrends(req, res, next){
   var reply = setCurrentTrends(res);
 }
+
+function getCurrentTrends(req, res, next){
+  Trend.find().execFind(function(arr,data){
+    res.send(data);
+  });
+}
 //////
 //Set the currently trending topic
 ////
 function setTrendingForUser(req, res, next){
-
 
 }
 
@@ -133,9 +152,9 @@ function flipStatus(req, res, next){
 //////
 //Post the tweets to a user
 ////
-function pingUser(ids){
+function pingUser(ids, message_key, message_data){
   var message = new gcm.Message();
-  message.addData("anything","I Don't Fucking Care");
+  message.addData(message_key,message_data);
   var sender = new gcm.Sender('AIzaSyDx1b8eGfFYEmAgrwp7qgTwU3SSU9_1mu4');
   console.log('IDS: ' + ids);
   var array = [];
@@ -147,39 +166,17 @@ function pingUser(ids){
 
 function testPing(req, res, next){
   User.findOne(function (err, doc){
-    pingUser(doc.registration_id);
+    pingUser(doc.registration_id, "update", "update");
     res.send('sent that bitch');
   });
 }
-/*
-function getPeople(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  Person.find().limit(100).execFind(function(arr,data){
-    res.send(data);
-  });
-}
 
-function postPerson(req,res,next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  var person = new Person();
-  person.first_name = req.body.first_name;
-  person.last_name = req.body.last_name;
-  person.is_awesome = req.body.is_awesome;
-  person.save(function(){
-    Person.find().limit(100).execFind(function(arr,data){
-     res.send(data);
-    });
-  });
-}
-
-*/
 var the_interval = 60 * 60 *1000;
 //setInterval(setCurrentTrends(), the_interval);
 server.post('/newuser', initializeUser);
 server.get('/testping', testPing);
 server.get('/testtrends', testCurrentTrends);
+server.get('/currenttrends', getCurrentTrends);
 
 var port = process.env.PORT || 8080;
 server.listen(port, function(){
