@@ -122,15 +122,15 @@ function setCurrentTrends(){
       }
     }
       var streamone = T.stream('statuses/filter', { track: trends[0].trend_name });
-      streamone.on('tweet', addTweet( trends[0].trend_name );
+      streamone.on('tweet', addTweet( trends[0].trend_name ));
       var streamtwo = T.stream('statuses/filter', { track: trends[1].trend_name });
-      streamtwo.on('tweet', addTweet( trends[1].trend_name );
+      streamtwo.on('tweet', addTweet( trends[1].trend_name ));
       var streamthree = T.stream('statuses/filter', { track: trends[2].trend_name });
-      streamthree.on('tweet', addTweet( trends[2].trend_name );
+      streamthree.on('tweet', addTweet( trends[2].trend_name ));
       var streamfour = T.stream('statuses/filter', { track: trends[3].trend_name });
-      streamfour.on('tweet', addTweet( trends[3].trend_name );
+      streamfour.on('tweet', addTweet( trends[3].trend_name ));
       var streamfive = T.stream('statuses/filter', { track: trends[4].trend_name });
-      streamfive.on('tweet', addTweet( trends[4].trend_name );
+      streamfive.on('tweet', addTweet( trends[4].trend_name ));
       console.log("Successfully updated the trends");
     });
   });
