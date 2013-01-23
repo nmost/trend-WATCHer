@@ -94,6 +94,7 @@ function setCurrentTrends(res){
     Trend.find().execFind(function(arr,data){
       trends = data;
     });
+    console.log(trends);
     //FOR NOW CHOOSE 5
     var length = 5;
     var replyobject = reply[0].trends;
@@ -102,9 +103,9 @@ function setCurrentTrends(res){
       var secondlength = 5;
       var keep_trend = false;
       while(secondlength--){
-        if (currenttrend && currenttrend.name == replyobject[secondlength].name) keep_trend = true;
+        if (currenttrend && currenttrend.trend_name == replyobject[secondlength].name) keep_trend = true;
       }
-      if(currenttrend && !keep_trend) Trend.find({name: currenttrend.name}).remove();
+      if(currenttrend && !keep_trend) Trend.find({trend_name: currenttrend.trend_name}).remove();
     }
     
     //now that the DB is clean
@@ -117,7 +118,6 @@ function setCurrentTrends(res){
       }
       if(!is_in_db){
          var newtrend = new Trend();
-         console.log(replyobject[length]);
          newtrend.trend_name = replyobject[length].name;
          newtrend.trend_query = replyobject[length].query;
          newtrend.save();
