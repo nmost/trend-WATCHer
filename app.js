@@ -50,7 +50,6 @@ var UserSchema = new Schema({
 var TrendSchema = new Schema({
   trend_name: String,
   trend_query: String,
-  tweets: { type: ObjectId, ref: 'Tweet'},
   users: {type: ObjectId, ref: 'User'},
   newcounter: Number
 });
@@ -122,9 +121,22 @@ function setCurrentTrends(){
          newtrend.save();
       }
     }
-      console.log("update trends");
+      var streamone = T.stream('statuses/filter', { track: trends[0].trend_name });
+      streamone.on('tweet', addTweet( trends[0].trend_name );
+      var streamtwo = T.stream('statuses/filter', { track: trends[1].trend_name });
+      streamtwo.on('tweet', addTweet( trends[1].trend_name );
+      var streamthree = T.stream('statuses/filter', { track: trends[2].trend_name });
+      streamthree.on('tweet', addTweet( trends[2].trend_name );
+      var streamfour = T.stream('statuses/filter', { track: trends[3].trend_name });
+      streamfour.on('tweet', addTweet( trends[3].trend_name );
+      var streamfive = T.stream('statuses/filter', { track: trends[4].trend_name });
+      streamfive.on('tweet', addTweet( trends[4].trend_name );
+      console.log("Successfully updated the trends");
     });
   });
+}
+function addTweet( trend ){
+  console.log(tweet);
 }
 function testCurrentTrends(req, res, next){
   var reply = setCurrentTrends();
@@ -174,6 +186,7 @@ function testPing(req, res, next){
 
 var the_interval = 60 * 60 *1000;
 setInterval(setCurrentTrends(), the_interval);
+
 server.post('/newuser', initializeUser);
 server.get('/testping', testPing);
 server.get('/testtrends', testCurrentTrends);
