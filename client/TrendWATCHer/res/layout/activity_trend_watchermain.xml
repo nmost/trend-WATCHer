@@ -2,13 +2,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#222"
     tools:context=".TrendWATCHERMain" >
 
     <TextView
+        android:id="@+id/main_textview_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/hello_world" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="18dp"
+        android:text="@string/main_title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ddd" />
+
+    <Button
+        android:id="@+id/main_button_start"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="23dp"
+        android:layout_marginLeft="40dp"
+        android:background="#ddd"
+        android:text="@string/main_start" />
+
+    <ListView
+        android:id="@+id/main_trend_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/main_button_start"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/main_textview_title"
+        android:layout_margin="16dp"
+        android:textColor="#ddd" >
+    </ListView>
+
+    <Button
+        android:id="@+id/main_button_stop"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/main_button_start"
+        android:layout_alignBottom="@+id/main_button_start"
+        android:layout_alignRight="@+id/main_textview_title"
+        android:background="#ddd"
+        android:text="@string/main_stop" />
 
 </RelativeLayout>
