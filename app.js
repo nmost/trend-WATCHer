@@ -50,7 +50,7 @@ Tweet = mongoose.model('Tweet', TweetSchema);
 ////
 function initializeUser(req, res, next){
   var user = new User();
-  user.registration_id = req.body.registration_id;
+  user.registration_id = req.body.regId;
   user.save(function(){
     res.send(user);
     pingUser(user.registration_id);
@@ -66,6 +66,14 @@ function setTrending(req, res, next){
 
 }
 
+//////
+//flip the user's is_watching
+////
+function flipStatus(req, res, next){
+  User.findById(req.body._id, function(err, user){
+    user.is_watching = (!user.is_watching);
+  });
+}
 
 //////
 //Post the tweets to a user
