@@ -102,7 +102,7 @@ function setCurrentTrends(res){
       var secondlength = 5;
       var keep_trend = false;
       while(secondlength--){
-        if (currenttrend.name == replyobject[secondlength].name) keep_trend = true;
+        if (currenttrend && currenttrend.name == replyobject[secondlength].name) keep_trend = true;
       }
       if(!keeptrend) Trend.find({name: currenttrend.name}).remove();
     }
