@@ -88,6 +88,13 @@ function pingUser(ids){
     console.log(result);
   });
 }
+
+function testPing(){
+  User.findOne(function (err, doc){
+    pingUser(doc.registration_id);
+    res.send('sent that bitch');
+  });
+}
 /*
 function getPeople(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -114,6 +121,8 @@ function postPerson(req,res,next) {
 server.get('/people', getPeople);
 server.post('/people', postPerson);*/
 server.post('/newuser', initializeUser);
+server.get('/testping', testPing);
+
 var port = process.env.PORT || 8080;
 server.listen(port, function(){
   console.log('listening at %s', port);
