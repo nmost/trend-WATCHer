@@ -35,7 +35,7 @@ var TweetSchema = new Schema({
   tweeter: String,
   time: { type: Date, default: Date.now },
   content: String,
-});
+},{capped: 104857600});
 var TrendSchema = new Schema({
   trend_name: String,
   trend_query: String,
