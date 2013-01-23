@@ -5,6 +5,7 @@ import static com.pebble.trendwatcher.CommonUtilities.SENDER_ID;
 import static com.pebble.trendwatcher.CommonUtilities.SERVER_URL;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,19 +20,32 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gcm.GCMRegistrar;
 import com.pebble.Web.AsyncHttpGet;
+import com.pebble.Web.AsyncHttpPost;
 
-public class TrendWATCHERMain extends Activity {
+public class TrendWATCHERMain extends Activity implements OnClickListener {
 
-	TextView mDisplay;
 	AsyncTask<Void, Void, Void> mRegisterTask;
 	SharedPreferences prefs;
 	String genId;
 	Context c;
+	private String picked;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +56,15 @@ public class TrendWATCHERMain extends Activity {
 		c = this;
 
 		setContentView(R.layout.activity_trend_watchermain);
+
+		((Button) findViewById(R.id.main_button_start))
+				.setOnClickListener(this);
+
 		checkNotNull(SERVER_URL, "SERVER_URL");
 		checkNotNull(SENDER_ID, "SENDER_ID");
-		// Make sure the device has the proper dependencies.
 		GCMRegistrar.checkDevice(this);
-		// Make sure the manifest was properly set - comment out this line
-		// while developing the app, then uncomment it when it's ready.
+
 		GCMRegistrar.checkManifest(this);
-		// mDisplay = (TextView) findViewById(R.id.display);
 		registerReceiver(mHandleMessageReceiver, new IntentFilter(
 				DISPLAY_MESSAGE_ACTION));
 		final String regId = GCMRegistrar.getRegistrationId(this);
@@ -60,12 +75,9 @@ public class TrendWATCHERMain extends Activity {
 			// Device is already registered on GCM, check server.
 			if (GCMRegistrar.isRegisteredOnServer(this)) {
 				// Skips registration.
-				// mDisplay.append(getString(R.string.already_registered) +
-				// "\n");
+
 			} else {
-				// Try to register again, but not in the UI thread.
-				// It's also necessary to cancel the thread onDestroy(),
-				// hence the use of AsyncTask instead of a raw thread.
+
 				final Context context = this;
 				mRegisterTask = new AsyncTask<Void, Void, Void>() {
 
@@ -73,12 +85,7 @@ public class TrendWATCHERMain extends Activity {
 					protected Void doInBackground(Void... params) {
 						boolean registered = ServerUtilities.register(context,
 								regId);
-						// At this point all attempts to register with the app
-						// server failed, so we need to unregister the device
-						// from GCM - the app will try to register again when
-						// it is restarted. Note that GCM will send an
-						// unregistered callback upon completion, but
-						// GCMIntentService.onUnregistered() will ignore it.
+
 						if (!registered) {
 							GCMRegistrar.unregister(context);
 						}
@@ -95,9 +102,35 @@ public class TrendWATCHERMain extends Activity {
 			}
 		}
 
-		if (!genId.contains("")) {
+		if (!genId.equals("")) {
 			getTrends();
 		}
+
+		final ImageView myImageView = (ImageView) findViewById(R.id.imageView1);
+		myImageView.setVisibility(View.VISIBLE);
+		Animation myFadeInAnimation = AnimationUtils.loadAnimation(this,
+				R.anim.fadeout);
+		myImageView.startAnimation(myFadeInAnimation); // Set animation to your
+														// ImageView
+		myFadeInAnimation.setAnimationListener(new AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animation arg0) {
+				myImageView.setVisibility(View.GONE);
+			}
+		});
 
 	}
 
@@ -106,7 +139,6 @@ public class TrendWATCHERMain extends Activity {
 		genId = newgenId;
 		editor.putString("genId", genId);
 		editor.commit();
-
 		getTrends();
 
 	}
@@ -139,6 +171,43 @@ public class TrendWATCHERMain extends Activity {
 				} catch (Exception e) {
 					//
 				}
+
+				ListView lv = (ListView) findViewById(R.id.main_trend_list);
+				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+						this, R.layout.list_item, trendList);
+
+				lv.setAdapter(arrayAdapter);
+
+				OnItemClickListener listener = new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int pos, long id) {
+						Toast.makeText(
+								c,
+								"Going to watch: "
+										+ ((TextView) parent.getChildAt(pos))
+												.getText().toString(),
+								Toast.LENGTH_SHORT).show();
+
+						for (int a = 0; a < parent.getChildCount(); a++) {
+							parent.getChildAt(a).setBackgroundColor(
+									c.getResources()
+											.getColor(R.color.backBlack));
+						}
+
+						view.setBackgroundColor(c.getResources().getColor(
+								R.color.orange));
+
+						picked = ((TextView) parent.getChildAt(pos)).getText()
+								.toString();
+
+					}
+
+				};
+
+				lv.setOnItemClickListener(listener);
+
 			}
 
 		} catch (JSONException e) {
@@ -178,5 +247,51 @@ public class TrendWATCHERMain extends Activity {
 		}
 
 	};
+
+	public void sendTweetsToPebble(String tweets) {
+
+		if (tweets == null)
+			return;
+
+		// So to send to the pebble watch we're taking a JSONArray and tossing
+		// it into a string.
+
+		// You guys can do the rest....
+
+		final Intent i = new Intent("com.getpebble.action.SEND_DATA");
+		i.putExtra("sender", "TrendWATCHer");
+		i.putExtra("tweet_array", tweets);
+		Log.d("trending", "Sending the tweets to pebble: " + tweets);
+		sendBroadcast(i);
+	}
+
+	@Override
+	public void onClick(View v) {
+
+		if (v.getId() == R.id.main_button_start) {
+			if (picked == "" || picked == null) {
+				Toast.makeText(c, "Please pick a trend", Toast.LENGTH_SHORT)
+						.show();
+			} else {
+				Toast.makeText(c, "Lets get WATCHing", Toast.LENGTH_SHORT)
+						.show();
+
+				HashMap<String, String> data = new HashMap<String, String>();
+				data.put("_id", genId);
+				data.put("is_watching", "true");
+				data.put("trend", picked);
+
+				AsyncHttpPost asyncHttpPost = new AsyncHttpPost(data) {
+					@Override
+					protected void onPostExecute(String result) {
+						Toast.makeText(c, result, Toast.LENGTH_LONG).show();
+					};
+				};
+				asyncHttpPost
+						.execute("http://trend-watcher.herokuapp.com/settrend");
+
+			}
+		}
+	}
 
 }

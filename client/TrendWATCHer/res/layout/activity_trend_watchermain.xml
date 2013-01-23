@@ -15,38 +15,57 @@
         android:layout_marginTop="18dp"
         android:text="@string/main_title"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#ddd" />
-
-    <Button
-        android:id="@+id/main_button_start"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="23dp"
-        android:layout_marginLeft="40dp"
-        android:background="#ddd"
-        android:text="@string/main_start" />
+        android:textColor="#ddd"
+        android:textSize="23dp"
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/main_trend_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/main_button_start"
+        android:layout_above="@+id/buttons"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/main_textview_title"
         android:layout_margin="16dp"
         android:textColor="#ddd" >
     </ListView>
 
-    <Button
-        android:id="@+id/main_button_stop"
-        android:layout_width="100dp"
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/main_button_start"
-        android:layout_alignBottom="@+id/main_button_start"
-        android:layout_alignRight="@+id/main_textview_title"
-        android:background="#ddd"
-        android:text="@string/main_stop" />
+        android:layout_alignLeft="@+id/main_trend_list"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:layout_alignRight="@+id/main_trend_list"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/main_button_start"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:textSize="25dp"
+            android:layout_marginBottom="23dp"
+            android:layout_marginRight="20dp"
+            android:background="#47c8f5"
+            android:text="@string/main_start" />
+
+        <Button
+            android:id="@+id/main_button_stop"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+                        android:textSize="25dp"
+            
+            android:background="#47c8f5"
+            android:text="@string/main_stop" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/splash"
+        android:visibility="gone" />
 
 </RelativeLayout>
