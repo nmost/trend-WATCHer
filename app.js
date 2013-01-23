@@ -155,12 +155,13 @@ function flipStatus(req, res, next){
 function pingUser(ids, message_key, message_data){
   var message = new gcm.Message();
   message.addData(message_key,message_data);
+  console.log("MESSAGE KEY: " + message_key);
+  console.log("MESSAGE DATA: " + message_data);
   var sender = new gcm.Sender('AIzaSyDx1b8eGfFYEmAgrwp7qgTwU3SSU9_1mu4');
-  console.log('IDS: ' + ids);
   var array = [];
   array.push(ids);
   sender.send(message, array, 5, function(err, result){
-    console.log(result);
+    if(err) console.log(err);
   });
 }
 
