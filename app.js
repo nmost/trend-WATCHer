@@ -123,8 +123,13 @@ function addTweet(tweet, trend ){
   newtweet.tweeter = tweet.user.name;
   newtweet.time = tweet.created_at;
   newtweet.content = tweet.text;
-  newtweet.save();
-  console.log("saved a tweet!");
+  newtweet.save(function(err){
+   if(err) {
+     console.log("fuck: " + err);
+     return;
+   }
+   console.log("saved a tweet"); 
+  });
   //SAVE TO TREND HERE
 }
 function testCurrentTrends(req, res, next){
