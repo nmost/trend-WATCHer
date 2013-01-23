@@ -83,7 +83,7 @@ function initializeUser(req, res, next){
 //////
 //Get the current top 5 trending topics NOTE SHOULD BE MADE INTO SELF EXECUTING NAMED ANONYMOUS EVENTUALLY
 ////
-function setCurrentTrends(res){
+function setCurrentTrends(){
   T.get('trends/place', {'id':'1'}, function(err, reply){
     if(err){
       console.log(err);
@@ -122,12 +122,12 @@ function setCurrentTrends(res){
          newtrend.save();
       }
     }
-    res.send("trends saved");
+      console.log("update trends");
     });
   });
 }
 function testCurrentTrends(req, res, next){
-  var reply = setCurrentTrends(res);
+  var reply = setCurrentTrends();
 }
 
 function getCurrentTrends(req, res, next){
