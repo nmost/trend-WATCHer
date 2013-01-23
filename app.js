@@ -118,7 +118,7 @@ function setCurrentTrends(){
 }
 //FIGURE OUT HOW TO TELL WHICH TREND THE TWEET BELONGS TO
 function addTweet(tweet, trend ){
-  console.log("found a tweet!");
+  if (tweet.text.indexOf("RT") == 1 || tweet.text.indexOf("RT") == 0) return;
   var newtweet = new Tweet();
   newtweet.tweeter = tweet.user.name;
   newtweet.time = tweet.created_at;
@@ -128,7 +128,7 @@ function addTweet(tweet, trend ){
      console.log("fuck: " + err);
      return;
    }
-   console.log("saved a tweet"); 
+   console.log("saved a tweet by " + newtweet.tweeter); 
   });
   //SAVE TO TREND HERE
 }
