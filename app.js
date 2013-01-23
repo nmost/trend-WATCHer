@@ -118,6 +118,7 @@ function setCurrentTrends(res){
          var newtrend = new Trend();
          newtrend.trend_name = replyobject[length].trend_name;
          newtrend.trend_query = replyobject[length].query;
+         console.log(newtrend);
          newtrend.save();
       }
     }
@@ -172,7 +173,7 @@ function testPing(req, res, next){
 }
 
 var the_interval = 60 * 60 *1000;
-//setInterval(setCurrentTrends(), the_interval);
+setInterval(setCurrentTrends(), the_interval);
 server.post('/newuser', initializeUser);
 server.get('/testping', testPing);
 server.get('/testtrends', testCurrentTrends);
