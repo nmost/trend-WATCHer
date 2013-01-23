@@ -48,7 +48,8 @@ var UserSchema = new Schema({
   is_watching: { type: Boolean, default: false}
 });
 var TrendSchema = new Schema({
-  trend: String,
+  trend_name: String,
+  trend_query: String,
   tweets: { type: ObjectId, ref: 'Tweet'},
   users: {type: ObjectId, ref: 'User'},
   newcounter: Number
@@ -84,7 +85,28 @@ function initializeUser(req, res, next){
 ////
 function setCurrentTrends(res){
   T.get('trends/place', {'id':'1'}, function(err, reply){
-    console.log(reply);
+    var trends = Trend.find();
+    //FOR NOW CHOOSE 5
+    var length = 5
+    var replyobject = reply[0];
+    while(length--) {
+      var keep_trend = true;
+      var secondlength = 5;
+      var currenttrend = trends[length];
+      if(currenttrend) {
+        keep_trend = false;
+        while(secondlength--) {
+          if(currenttrend.name == replyobject.trends[secondlength].name) keep_trend = true;
+        }
+      }
+      if(!keep_trend){
+         Trend.find({name:currenttrend.name}).remove();
+         var newtrend = new Trend();
+         newtrend.trend_name = currenttrend.name;
+         newtrend.trend_query = currenttrend.query;
+         newtrend.save();
+      }
+    }
     res.send(reply);
   });
 }
@@ -152,8 +174,9 @@ function postPerson(req,res,next) {
   });
 }
 
-server.get('/people', getPeople);
-server.post('/people', postPerson);*/
+*/
+var the_interval = 60 * 60 *1000;
+//setInterval(setCurrentTrends(), the_interval);
 server.post('/newuser', initializeUser);
 server.get('/testping', testPing);
 server.get('/testtrends', testCurrentTrends);
