@@ -25,11 +25,19 @@ var Twit = require('twit');
 var T = new Twit({
   consumer_key: '8MKPgNNynlgsvZicbDAYzw',
   consumer_secret: 'OOwwE430SSiOHn8UjWn7QOMdRfiuut72jPvf0J6Gw',
-  access_token: '1113034020-BLnOIpL2AS0OuodIhajtdbkVPqhuDaxUlr5vaBc',
-  access_token_secret: 'Km0pdyppNslHX1Jf8JqHeCYgVHAZ06l7UgtAUmkmh0'
+  access_token: '1113034020-yMIZFV7MZuyZaYRTzE5uD5vf7PsMuv2uYegws1h',
+  access_token_secret: 'GvaLOpiOLJvuN3PVDFTQFZtPP7HqGwxDzKHj6HPX8M'
 });
+var OARequest = require('./node_modules/twit/lib/oarequest');
+T.requesttrends = function(method, path, params, callback){
+  if(typeof params === 'function'){
+    callback = params;
+    params = null;
+  }
+  return new OARequest(this.auth, method, path + '.json', this.normalizeParams(params)).end(callback);
+}
 T.gettrends = function(path, params, callback){
-  this.request('GET', T.REST_ROOT + path + '?id=1', params, callback);
+  this.requesttrends('GET', 'https://api.twitter.com/1.1/' + path, params, callback);
 }
 
 //DATABASE INIT
@@ -74,14 +82,14 @@ function initializeUser(req, res, next){
 //////
 //Get the current top 5 trending topics NOTE SHOULD BE MADE INTO SELF EXECUTING NAMED ANONYMOUS EVENTUALLY
 ////
-function setCurrentTrends(){
-  T.gettrends('trends/place', [], function(response){
-    console.log(response);
-    return response;
+function setCurrentTrends(res){
+  T.get('trends/place', {'id':'1'}, function(err, reply){
+    console.log(reply);
+    res.send(reply);
   });
 }
 function testCurrentTrends(req, res, next){
-  res.send(setCurrentTrends());
+  var reply = setCurrentTrends(res);
 }
 //////
 //Set the currently trending topic
@@ -105,6 +113,7 @@ function flipStatus(req, res, next){
 ////
 function pingUser(ids){
   var message = new gcm.Message();
+  message.addData("anything","I Don't Fucking Care");
   var sender = new gcm.Sender('AIzaSyDx1b8eGfFYEmAgrwp7qgTwU3SSU9_1mu4');
   console.log('IDS: ' + ids);
   var array = [];
