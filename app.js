@@ -83,7 +83,7 @@ function flipStatus(req, res, next){
 function pingUser(ids){
   var message = new gcm.Message();
   var sender = new gcm.Sender('AIzaSyDx1b8eGfFYEmAgrwp7qgTwU3SSU9_1mu4');
-  
+  console.log(ids);
   sender.send(message, ids, 5, function(err, result){
     console.log(result);
   });
