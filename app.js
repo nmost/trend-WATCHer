@@ -117,6 +117,7 @@ function setCurrentTrends(res){
       }
       if(!is_in_db){
          var newtrend = new Trend();
+         console.log(replyobject[length]);
          newtrend.trend_name = replyobject[length].name;
          newtrend.trend_query = replyobject[length].query;
          newtrend.save();
