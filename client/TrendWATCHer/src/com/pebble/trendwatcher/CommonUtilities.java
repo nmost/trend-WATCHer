@@ -28,7 +28,7 @@ public final class CommonUtilities {
 	/**
 	 * Base URL of the Demo Server (such as http://my_host:8080/gcm-demo)
 	 */
-	static final String SERVER_URL = "http://pebble-stocks.herokuapp.com";
+	static final String SERVER_URL = "http://trend-watcher.herokuapp.com";
 
 	/**
 	 * Google API project id registered to use GCM.
@@ -63,7 +63,8 @@ public final class CommonUtilities {
 	 */
 	static void displayMessage(Context context, String message) {
 		Intent intent = new Intent(DISPLAY_MESSAGE_ACTION);
-		intent.putExtra(EXTRA_MESSAGE, message);
+			intent.putExtra("message", message);
+		
 		context.sendBroadcast(intent);
 	}
 }

@@ -3,6 +3,10 @@
 
     <string name="app_name">TrendWATCHer</string>
     <string name="hello_world">Hello world!</string>
+    <string name="main_title">Pick a top trend to watch</string>
+        <string name="main_stop">Stop</string>
+        <string name="main_start">Begin</string>
+        
     <string name="menu_settings">Settings</string>
 
 </resources>
