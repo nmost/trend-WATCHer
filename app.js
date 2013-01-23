@@ -49,6 +49,8 @@ Tweet = mongoose.model('Tweet', TweetSchema);
 //Initialize a user
 ////
 function initializeUser(req, res, next){
+  if(!req.body.regId)
+    res.send("invalid regID");
   var user = new User();
   user.registration_id = req.body.regId;
   user.save(function(){
