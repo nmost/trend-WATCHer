@@ -109,20 +109,14 @@ function setCurrentTrends(){
          newtrend.save();
       }
     }
-      var streamone = T.stream('statuses/filter', { track: trends[0].trend_name });
-      streamone.on('tweet', function(tweet){addTweet(tweet, trends[0]._id )});
-      var streamtwo = T.stream('statuses/filter', { track: trends[1].trend_name });
-      streamtwo.on('tweet', function(tweet){addTweet(tweet, trends[1]._id )});
-      var streamthree = T.stream('statuses/filter', { track: trends[2].trend_name });
-      streamthree.on('tweet', function(tweet){addTweet(tweet, trends[2]._id )});
-      var streamfour = T.stream('statuses/filter', { track: trends[3].trend_name });
-      streamfour.on('tweet', function(tweet){addTweet(tweet, trends[3]._id )});
-      var streamfive = T.stream('statuses/filter', { track: trends[4].trend_name });
-      streamfive.on('tweet', function(tweet){addTweet(tweet, trends[4]._id )});
+
+      var stream = T.stream('statuses/filter', { track: trends[0].trend_name + ',' + trends[1].trend_name + ',' + + trends[2].trend_name + ',' + trends[3].trend_name + ',' + trends[4].trend_name });
+      stream.on('tweet', function(tweet){addTweet(tweet)});
       console.log("Successfully updated the trends");
     });
   });
 }
+//FIGURE OUT HOW TO TELL WHICH TREND THE TWEET BELONGS TO
 function addTweet(tweet, trend ){
   console.log("found a tweet!");
   var newtweet = new Tweet();
@@ -131,13 +125,7 @@ function addTweet(tweet, trend ){
   newtweet.content = tweet.text;
   newtweet.save();
   console.log("saved a tweet!");
-  Trend.findById(trend, function(err, doc){
-    doc.newcounter += 1;
-    if(doc.newcounter > 8){
-      doc.newcounter = 0;
-    }
-    doc.save();
-  });
+  //SAVE TO TREND HERE
 }
 function testCurrentTrends(req, res, next){
   var reply = setCurrentTrends();
