@@ -92,9 +92,11 @@ function setCurrentTrends(res){
     }
     var trends = [];
     Trend.find({}, function(arr,data){
+      console.log("DATA");
       console.log(data);
       trends = data;
     });
+    console.log("TRENDS");
     console.log(trends);
     //FOR NOW CHOOSE 5
     var length = 5;
