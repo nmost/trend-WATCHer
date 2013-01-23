@@ -20,6 +20,18 @@ server.use(express.bodyParser());
 //GCM stuff
 var gcm = require('node-gcm');
 
+//TWIT stuff
+var Twit = require('twit');
+var T = new Twit({
+  consumer_key: '8MKPgNNynlgsvZicbDAYzw',
+  consumer_secret: 'OOwwE430SSiOHn8UjWn7QOMdRfiuut72jPvf0J6Gw',
+  access_token: '1113034020-BLnOIpL2AS0OuodIhajtdbkVPqhuDaxUlr5vaBc',
+  access_token_secret: 'Km0pdyppNslHX1Jf8JqHeCYgVHAZ06l7UgtAUmkmh0'
+});
+T.gettrends = function(path, params, callback){
+  this.request('GET', T.REST_ROOT + path + '?id=1', params, callback);
+}
+
 //DATABASE INIT
 var ObjectId = mongoose.Schema.Types.ObjectId;
 var UserSchema = new Schema({
@@ -59,11 +71,22 @@ function initializeUser(req, res, next){
   });
 }
 
-
+//////
+//Get the current top 5 trending topics NOTE SHOULD BE MADE INTO SELF EXECUTING NAMED ANONYMOUS EVENTUALLY
+////
+function setCurrentTrends(){
+  T.gettrends('trends/place', [], function(response){
+    console.log(response);
+    return response;
+  });
+}
+function testCurrentTrends(req, res, next){
+  res.send(setCurrentTrends());
+}
 //////
 //Set the currently trending topic
 ////
-function setTrending(req, res, next){
+function setTrendingForUser(req, res, next){
 
 
 }
@@ -124,6 +147,7 @@ server.get('/people', getPeople);
 server.post('/people', postPerson);*/
 server.post('/newuser', initializeUser);
 server.get('/testping', testPing);
+server.get('/testtrends', testCurrentTrends);
 
 var port = process.env.PORT || 8080;
 server.listen(port, function(){
