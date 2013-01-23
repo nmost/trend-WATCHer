@@ -28,36 +28,25 @@ var T = new Twit({
   access_token: '1113034020-yMIZFV7MZuyZaYRTzE5uD5vf7PsMuv2uYegws1h',
   access_token_secret: 'GvaLOpiOLJvuN3PVDFTQFZtPP7HqGwxDzKHj6HPX8M'
 });
-var OARequest = require('./node_modules/twit/lib/oarequest');
-T.requesttrends = function(method, path, params, callback){
-  if(typeof params === 'function'){
-    callback = params;
-    params = null;
-  }
-  return new OARequest(this.auth, method, path + '.json', this.normalizeParams(params)).end(callback);
-}
-T.gettrends = function(path, params, callback){
-  this.requesttrends('GET', 'https://api.twitter.com/1.1/' + path, params, callback);
-}
 
 //DATABASE INIT
 var ObjectId = mongoose.Schema.Types.ObjectId;
-var UserSchema = new Schema({
-  registration_id: String,
-  trend: { type: ObjectId, ref: 'Trend'},
-  is_watching: { type: Boolean, default: false}
+var TweetSchema = new Schema({
+  tweeter: String,
+  time: { type: Date, default: Date.now },
+  content: String,
 });
 var TrendSchema = new Schema({
   trend_name: String,
   trend_query: String,
   users: {type: ObjectId, ref: 'User'},
-  newcounter: Number
+  tweets: [TweetSchema],
+  newcounter: {type: Number, default:0}
 });
-var TweetSchema = new Schema({
-  tweeter: String,
-  time: { type: Date, default: Date.now },
-  content: String,
-  trend: { type: ObjectId, ref: 'Trend'},
+var UserSchema = new Schema({
+  registration_id: String,
+  trend: [TrendSchema],
+  is_watching: { type: Boolean, default: false}
 });
 
 User = mongoose.model('User', UserSchema);
@@ -86,7 +75,6 @@ function setCurrentTrends(){
   T.get('trends/place', {'id':'1'}, function(err, reply){
     if(err){
       console.log(err);
-      res.send(err);
       return;
     }
     var trends = [];
@@ -122,21 +110,32 @@ function setCurrentTrends(){
       }
     }
       var streamone = T.stream('statuses/filter', { track: trends[0].trend_name });
-      streamone.on('tweet', function(tweet){addTweet(tweet, trends[0].trend_name )});
+      streamone.on('tweet', function(tweet){addTweet(tweet, trends[0]._id )});
       var streamtwo = T.stream('statuses/filter', { track: trends[1].trend_name });
-      streamtwo.on('tweet', function(tweet){addTweet(tweet, trends[1].trend_name )});
+      streamtwo.on('tweet', function(tweet){addTweet(tweet, trends[1]._id )});
       var streamthree = T.stream('statuses/filter', { track: trends[2].trend_name });
-      streamthree.on('tweet', function(tweet){addTweet(tweet, trends[2].trend_name )});
+      streamthree.on('tweet', function(tweet){addTweet(tweet, trends[2]._id )});
       var streamfour = T.stream('statuses/filter', { track: trends[3].trend_name });
-      streamfour.on('tweet', function(tweet){addTweet(tweet, trends[3].trend_name )});
+      streamfour.on('tweet', function(tweet){addTweet(tweet, trends[3]._id )});
       var streamfive = T.stream('statuses/filter', { track: trends[4].trend_name });
-      streamfive.on('tweet', function(tweet){addTweet(tweet, trends[4].trend_name )});
+      streamfive.on('tweet', function(tweet){addTweet(tweet, trends[4]._id )});
       console.log("Successfully updated the trends");
     });
   });
 }
 function addTweet(tweet, trend ){
-  console.log(tweet);
+  var newtweet = new Tweet();
+  newtweet.tweeter = tweet.user.name;
+  newtweet.time = tweet.created_at;
+  newtweet.content = tweet.text;
+  newtweet.save();
+  Trend.findById(trend, function(err, doc){
+    doc.newcounter += 1;
+    if(doc.newcounter > 8){
+      doc.newcounter = 0;
+    }
+    doc.save();
+  });
 }
 function testCurrentTrends(req, res, next){
   var reply = setCurrentTrends();
@@ -191,6 +190,7 @@ server.post('/newuser', initializeUser);
 server.get('/testping', testPing);
 server.get('/testtrends', testCurrentTrends);
 server.get('/currenttrends', getCurrentTrends);
+server.post('/settrend', setTrendingForUser);
 
 var port = process.env.PORT || 8080;
 server.listen(port, function(){
