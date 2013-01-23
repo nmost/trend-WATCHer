@@ -113,7 +113,7 @@ function setCurrentTrends(res){
       var size = 5;
       var is_in_db = false
       while(size--){
-        if(trends[size].name == replyobject[length].name) is_in_db = true;
+        if(trends.length && trends[size].name == replyobject[length].name) is_in_db = true;
       }
       if(!is_in_db){
          var newtrend = new Trend();
