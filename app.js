@@ -122,7 +122,7 @@ function setCurrentTrends(res){
          newtrend.save();
       }
     }
-    res.send(trends);
+    res.send("trends saved");
     });
   });
 }
