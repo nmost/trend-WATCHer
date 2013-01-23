@@ -104,7 +104,7 @@ function setCurrentTrends(res){
       while(secondlength--){
         if (currenttrend && currenttrend.name == replyobject[secondlength].name) keep_trend = true;
       }
-      if(!keep_trend) Trend.find({name: currenttrend.name}).remove();
+      if(currenttrend && !keep_trend) Trend.find({name: currenttrend.name}).remove();
     }
     
     //now that the DB is clean
