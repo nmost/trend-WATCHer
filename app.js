@@ -91,7 +91,7 @@ function setCurrentTrends(res){
       return;
     }
     var trends = [];
-    Trend.find().execFind(function(arr,data){
+    Trend.find({}, function(arr,data){
       trends = data;
     });
     console.log(trends);
