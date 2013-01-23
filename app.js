@@ -101,7 +101,7 @@ function setCurrentTrends(res){
       var secondlength = 5;
       var keep_trend = false;
       while(secondlength--){
-        if (currenttrend && currenttrend.trend_name == replyobject[secondlength].name) keep_trend = true;
+        if (currenttrend && currenttrend.trend_name == replyobject[secondlength].trend_name) keep_trend = true;
       }
       if(currenttrend && !keep_trend) Trend.remove({trend_name: currenttrend.trend_name});
     }
@@ -112,11 +112,11 @@ function setCurrentTrends(res){
       var size = 5;
       var is_in_db = false
       while(size--){
-        if(trends.length && trends[size].name == replyobject[length].name) is_in_db = true;
+        if(trends.length && trends[size].trend_name == replyobject[length].trend_name) is_in_db = true;
       }
       if(!is_in_db){
          var newtrend = new Trend();
-         newtrend.trend_name = replyobject[length].name;
+         newtrend.trend_name = replyobject[length].trend_name;
          newtrend.trend_query = replyobject[length].query;
          newtrend.save();
       }
