@@ -89,7 +89,7 @@ function pingUser(ids){
   });
 }
 
-function testPing(){
+function testPing(req, res, next){
   User.findOne(function (err, doc){
     pingUser(doc.registration_id);
     res.send('sent that bitch');
