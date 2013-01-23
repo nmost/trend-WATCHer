@@ -124,11 +124,13 @@ function setCurrentTrends(){
   });
 }
 function addTweet(tweet, trend ){
+  console.log("found a tweet!");
   var newtweet = new Tweet();
   newtweet.tweeter = tweet.user.name;
   newtweet.time = tweet.created_at;
   newtweet.content = tweet.text;
   newtweet.save();
+  console.log("saved a tweet!");
   Trend.findById(trend, function(err, doc){
     doc.newcounter += 1;
     if(doc.newcounter > 8){
