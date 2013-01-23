@@ -113,7 +113,7 @@ function flipStatus(req, res, next){
 ////
 function pingUser(ids){
   var message = new gcm.Message();
-  //message.addData("anything","I Don't Fucking Care");
+  message.addData("anything","I Don't Fucking Care");
   var sender = new gcm.Sender('AIzaSyDx1b8eGfFYEmAgrwp7qgTwU3SSU9_1mu4');
   console.log('IDS: ' + ids);
   var array = [];
