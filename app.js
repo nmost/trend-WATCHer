@@ -92,14 +92,13 @@ function setCurrentTrends(res){
     }
     var trends = [];
     Trend.find({}, function(arr,data){
-      console.log("DATA");
-      console.log(data);
       trends = data;
     //FOR NOW CHOOSE 5
     var length = 5;
     var replyobject = reply[0].trends;
     while(length--){
       var currenttrend = trends[length];
+      console.log(currenttrend);
       var secondlength = 5;
       var keep_trend = false;
       while(secondlength--){
@@ -158,8 +157,6 @@ function flipStatus(req, res, next){
 function pingUser(ids, message_key, message_data){
   var message = new gcm.Message();
   message.addData(message_key,message_data);
-  console.log("MESSAGE KEY: " + message_key);
-  console.log("MESSAGE DATA: " + message_data);
   var sender = new gcm.Sender('AIzaSyDx1b8eGfFYEmAgrwp7qgTwU3SSU9_1mu4');
   var array = [];
   array.push(ids);
